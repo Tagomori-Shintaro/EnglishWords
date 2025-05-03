@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8", lang="ja">
+    <title>Practice</title>
+    <link rel="stylesheet", type="text/css" href="./static/css/style-practice.css">
+</head>
+
+<body>
+<header>
+    Tagomori
+</header>
+
+<h1>page practice</h1>
+
+<p>{{ level }}</p>
+
+{{ generated_text }}
+
+<form action="/submit" method="POST">
+    {% for word, _ in options %}
+    <input type="radio" name="answer" value="{{ word }}" required>{{ word }}<br>
+    {% endfor %}
+
+    <!--問題文と正解と全選択肢の情報とレベルも一緒に送っておく-->
+
+    <input type="hidden" name="generated_text" value="{{ generated_text }}">
+    <input type="hidden" name="level" value="{{ level }}">
+    <input type="hidden" name="correct" value="{{ correct }}">
+    <!-- <input type="hidden" name="options" value="{{ options }}"> -->
+    <!-- 4/24 Jinja2のフィルタ tojsonを使うことで、optionのリストをHTMLに安全に埋め込める形にする -->
+    <input type="hidden" name="options" value='{{ options | tojson | safe }}'>
+
+
+    <button type="submit">答える</button>
+</form>
+
+
+
+<footer>
+    Shintaro
+</footer>
+
+</body>
+</html>

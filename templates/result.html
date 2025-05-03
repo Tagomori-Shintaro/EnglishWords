@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8", lang="ja">
+    <title>結果</title>
+    <link rel="stylesheet", type="text/css" href="./static/css/style-result.css">
+</head>
+
+<body>
+<header>
+    Tagomori
+</header>
+
+<h2>{{ level }} の結果</h2>
+
+<p>問題文</p>
+{{ generated_text }}
+
+<p>あなたの答え：<strong>{{ user_answer }}</strong></p>
+<p>正解は：<strong>{{ correct }}</strong></p>
+<div>
+    単語一覧<br>
+    {% for word, _ in options %}
+        {{ word }}<br>
+    {% endfor %}
+</div>
+
+{% if current_user.is_authenticated %}
+<form action="/save_word" method="POST">
+    <input type="hidden" name="word" value="{{ correct }}">
+    <button type="submit">この単語を保存</button>
+</form>
+{% endif %}
+
+もう一度やるボタン
+<form action="/practice" method="get">
+    <input type="hidden" name="level" value="{{ level }}">
+    <button type="submit">もう一問やる</button>
+</form>
+
+<a href="/">レベルの選択に戻る</a>
+
+<footer>
+    Shintaro
+</footer>
+
+</body>
+</html>

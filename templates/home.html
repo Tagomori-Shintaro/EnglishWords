@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8", lang="ja">
+    <title>HOME</title>
+    <link rel="stylesheet", type="text/css" href="./static/css/style-home.css">
+</head>
+
+<body>
+<header>
+    Tagomori
+</header>
+
+<h2>レベルを選んでください</h2>
+<form action="/practice" method="get">
+    <select name="level">
+        <option value="A1">A1</option>
+        <option value="A2">A2</option>
+        <option value="B1">B1</option>
+        <option value="B2">B2</option>
+    </select>
+    <button type="submit">スタート</button>
+</form>
+
+{% if current_user.is_authenticated %}
+<p>ようこそ、{{ current_user.username }} さん！ <a href="/logout">ログアウト</a></p>
+<h3>保存した単語</h3>
+<ul>
+    {% for w in words %}
+        <li>{{ w.word }}</li>
+    {% endfor %}
+</ul>
+{% else %}
+<p><a href="/login">ログイン</a> または <a href="/register">登録</a>してください。</p>
+<p>ログインして学習すると、学習した単語を保存できるようになります</p>
+{% endif %}
+
+<footer>
+    Shintaro
+</footer>
+
+</body>
+</html>
