@@ -1,0 +1,10 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+torch==2.2.2         # or your installed version
+transformers==4.40.2 # または現在インストールされているバージョン
+pandas==2.2.2
+spacy==3.7.4
+nltk==3.9.1
+word-forms==0.3.1    # 実際にインストールされているバージョンに合わせて
+Werkzeug==3.0.1      # werkzeug.security 用
