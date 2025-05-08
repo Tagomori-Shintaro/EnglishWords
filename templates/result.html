@@ -4,22 +4,35 @@
     <meta charset="utf-8", lang="ja">
     <title>結果</title>
     <link rel="stylesheet", type="text/css" href="./static/css/style-result.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
+
 <header>
-    Tagomori
+    <div class="header-left">Vocabulary道場</div>
+    <div class="header-right">
+        <img src="{{ url_for('static', filename='images/English-Logo.jpg') }}" alt="Logo" class="logo">
+    </div>
 </header>
 
-<h2>{{ level }} の結果</h2>
+<h2>解答結果</h2>
+CEFR-{{ level }}レベル
 
 <p>問題文</p>
 {{ generated_text }}
 
-<p>あなたの答え：<strong>{{ user_answer }}</strong></p>
-<p>正解は：<strong>{{ correct }}</strong></p>
+<p>正解は：<span style="color: #02A08F;"><b>{{ correct }}</b></span></p>
+
+{% if user_answer == correct %}
+<div class="speech-bubble">
+    🎉 素晴らしい! この調子で頑張ろう 🎉
+</div>
+{% endif %}
+<p>あなたの答え：<b>{{ user_answer }}</b></p>
+
 <div>
-    単語一覧<br>
+    選択肢の単語一覧<br>
     {% for word, _ in options %}
         {{ word }}<br>
     {% endfor %}
@@ -32,7 +45,7 @@
 </form>
 {% endif %}
 
-もう一度やるボタン
+
 <form action="/practice" method="get">
     <input type="hidden" name="level" value="{{ level }}">
     <button type="submit">もう一問やる</button>
@@ -41,7 +54,7 @@
 <a href="/">レベルの選択に戻る</a>
 
 <footer>
-    Shintaro
+    <small>あなたの単語学習の手助けに</small>
 </footer>
 
 </body>

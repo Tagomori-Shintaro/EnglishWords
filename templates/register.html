@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>ユーザー登録</title>
+    <link rel="stylesheet", type="text/css" href="./static/css/style-register.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
+
+    <header>
+        <div class="header-left">Vocabulary道場</div>
+        <div class="header-right">
+            <img src="{{ url_for('static', filename='images/English-Logo.jpg') }}" alt="Logo" class="logo">
+        </div>
+    </header>
     <h2>ユーザー登録</h2>
     <form method="post">
         <label>ユーザー名: <input type="text" name="username" required></label><br>
@@ -12,5 +21,10 @@
         <button type="submit">登録</button>
     </form>
     <p>既に登録済みですか？ <a href="/login">ログイン</a></p>
+
+
+<footer>
+    <small>あなたの単語学習の手助けに</small>
+</footer>    
 </body>
 </html>

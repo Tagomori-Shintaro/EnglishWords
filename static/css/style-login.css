@@ -1,25 +1,23 @@
 @import url('https://fonts.googleapis.com/css?family=M+PLUS+1p');
 
-header{
+header {
     display: flex;
-    height: 60px;
-    background-color: #02A08F;
     justify-content: space-between;
     align-items: center;
     padding: 0 20px;
     height: 60px;
+    background-color: #02A08F;
     font-family: 'M PLUS 1p', sans-serif;
     color: #FFFFFF;
-    text-align: center;
-  }
+}
 
 .header-left {
     font-size: 24px;
-  }
+}
 
 .header-right .logo {
     height: 40px;
-  }
+}
 
 body {
     font-family: "Open Sans", sans-serif;
@@ -33,7 +31,7 @@ footer{
     align-items: center;
     font-family: 'M PLUS 1p', sans-serif;
     color: #FFFFFF;
-    text-align: center;
+    text-align:center;
   }
 
   @media screen and (max-width: 600px) {
