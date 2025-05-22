@@ -16,7 +16,7 @@ from flask_login import (
 from werkzeug.security import generate_password_hash, check_password_hash
 
 ### インポート
-import torch
+import requests  # 外部API呼び出し用
 import pandas as pd
 import re
 import spacy
@@ -25,26 +25,13 @@ import nltk
 from nltk.stem import WordNetLemmatizer
 from word_forms.word_forms import get_word_forms
 import ast
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from markupsafe import Markup
+from datetime import datetime
+import os
 
 app = Flask(__name__)
 
 # DB設定
-# 4/24 前提、このデータベースには2つのテーブルを以下のコードで作ってある
-# -- ユーザーテーブル
-# CREATE TABLE users (
-#     id SERIAL PRIMARY KEY,
-#     username TEXT UNIQUE NOT NULL,
-#     password TEXT NOT NULL
-# );
-
-# -- 単語保存テーブル
-# CREATE TABLE saved_words (
-#     id SERIAL PRIMARY KEY,
-#     user_id INTEGER REFERENCES users(id),
-#     word TEXT NOT NULL
-# );
-
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "your_secret_key"
@@ -54,37 +41,29 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
-
 # Model definition
-# 4/24 データベースのカラムサイズを広げる 150→512
-class User(db.Model, UserMixin):
+class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(512), unique=True, nullable=False)
     password = db.Column(db.String(512), nullable=False)
-
+    correct_answers = db.Column(db.Integer)
 
 class SavedWord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     word = db.Column(db.String(100), nullable=False)
-
+    question_text = db.Column(db.String)
+    save_date = db.Column(db.String(100))
+    level = db.Column(db.String(10))
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
-
+    return Users.query.get(int(user_id))
 
 # Natural language tools
 nltk.download("wordnet")
 nlp = spacy.load("en_core_web_sm")
 lemmatizer = WordNetLemmatizer()
-# GPUを使用可能か確認し、使用する
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-model_name = "gpt2"
-tokenizer = GPT2Tokenizer.from_pretrained(model_name)
-tokenizer.pad_token = tokenizer.eos_token
-model = GPT2LMHeadModel.from_pretrained(model_name).to(device)
-model.config.pad_token_id = tokenizer.pad_token_id
 
 ### CSVファイル
 df = pd.read_csv("./static/csv/gutenberg_all_books.csv")
@@ -96,33 +75,19 @@ CSV_MAP = {
     "B2": "./static/csv/modified_B2.csv",
 }
 
+### 外部APIを使った文章生成関数
+def generate_text(prompt):
+    response = requests.post(
+        "https://Tagomorikun-GPT2Generator.hf.space/generate",
+        json={"prompt": prompt},
+        timeout=10
+    )
+    return response.json()["text"]
+
+
 ### 関数の作成
 
 
-# 文章生成
-def generate_text(prompt, max_new_tokens=100, temperature=0.7):
-    """
-    テキスト生成の関数
-    prompt: 入力テキスト（開始文）
-    max_length: 生成するテキストの最大長さ
-    temperature: 生成するテキストの創造性（高いほどランダム性が増す）
-    """
-    # 入力テキストをトークン化
-    inputs = tokenizer.encode(prompt, return_tensors="pt")
-    # モデルでテキスト生成
-    outputs = model.generate(
-        inputs,
-        max_new_tokens=max_new_tokens,
-        temperature=temperature,
-        num_return_sequences=1,  # 生成するテキストの数
-        no_repeat_ngram_size=2,  # 重複するフレーズを避ける
-        top_p=0.95,  # 上位p%の確率で生成する
-        top_k=50,  # トップk個の候補からサンプリング
-        do_sample=True,  # サンプリングを使用
-    )
-    # 出力をデコードしてテキストに変換
-    generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
-    return generated_text
 
 
 # ダミー作成
