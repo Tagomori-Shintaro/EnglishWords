@@ -45,9 +45,7 @@ app = Flask(__name__)
 #     word TEXT NOT NULL
 # );
 
-app.config["SQLALCHEMY_DATABASE_URI"] = (
-    "postgresql://postgres:tagomori@localhost:5433/myenglishusers"
-)
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = "your_secret_key"
 
