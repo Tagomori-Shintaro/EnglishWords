@@ -1,11 +1,13 @@
 Flask==3.0.3
 Flask-SQLAlchemy==3.1.1
 Flask-Login==0.6.3
-torch==2.6.0+cpu
---extra-index-url https://download.pytorch.org/whl/cpu
-transformers==4.40.2
 pandas==2.2.2
 spacy==3.7.4
+https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 nltk==3.9.1
 word-forms==2.1.0
-Werkzeug==3.0.1      # werkzeug.security 用
+Werkzeug==3.0.1
+MarkupSafe==2.1.3
+DateTime==5.5
+psycopg2-binary
+requests  # 外部API呼び出しに必要
