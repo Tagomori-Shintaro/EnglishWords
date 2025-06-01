@@ -76,6 +76,7 @@ CSV_MAP = {
 }
 
 ### 外部APIを使った文章生成関数
+"""
 def generate_text(prompt):
     response = requests.post(
         "https://Tagomorikun-GPT2Generator.hf.space/generate",
@@ -83,7 +84,22 @@ def generate_text(prompt):
         timeout=10
     )
     return response.json()["text"]
+"""
+def generate_text(prompt):
+    try:
+        response = requests.post(
+            "https://ughu-gpt2-generator.hf.space/generate",
+            json={"prompt": prompt},
+            timeout=10
+        )
+        print("API ステータス:", response.status_code)
+        print("API レスポンス:", response.text)
 
+        result = response.json()
+        return result["text"]
+    except Exception as e:
+        print("API呼び出しエラー:", e)
+        return "【APIエラー】"
 
 ### 関数の作成
 
